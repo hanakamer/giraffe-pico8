@@ -554,6 +554,7 @@ function _init()
 end
 
 function start()
+	
 	_update = update_game
 	_draw = draw_game
 end
@@ -572,7 +573,7 @@ else
 end
 
 if btn(5) then
-	start()
+	_init()
 end
 
 end
