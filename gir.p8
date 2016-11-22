@@ -3,6 +3,7 @@ version 8
 __lua__
 -- giraffe
 -- hana kamer, @terskaplumbaa
+
 function make_magicsparks_ps(ex,ey)
 	local ps = make_psystem(0.3,1.7, 1,5,1,5)
 
@@ -510,7 +511,7 @@ function _init()
 	head.sp2 = 37
 	head.sp3 = 52
 	head.sp4 = 53
-	head.box = {x1=0+giraffe_x,y1=0+head_y,x2=15+giraffe_x,y2=15+head_y}
+	head.box = {x1=0+giraffe_x,y1=0+head_y,x2=14+giraffe_x,y2=15+head_y}
 	
 	neck.sp = 34
 	
@@ -525,7 +526,8 @@ function _init()
 			sp = 22,
 			x = flr(rnd(150))+ 150,
 			y =1,
-			edit = flr(rnd(20))+40 
+			edit = flr(rnd(20))+40,
+			hornet = rnd(1)<=0.3 
 		})
 		
 		add(health,{
@@ -569,6 +571,10 @@ else
 	bg_color = 15
 end
 
+if btn(5) then
+	start()
+end
+
 end
 
 
@@ -578,6 +584,7 @@ function draw_over()
 	for i = 1,10 do
 		draw_big_head(rnd(128),rnd(128))
 	end
+	print('press x to restart game',20+cam_x,5,7)
 	for i=1,8 do
 		spr(67+i,24+i*9+cam_x,60)
 	end
@@ -614,7 +621,7 @@ function update_game()
 	for h in all(health)do
 		h.x = h.x -4
 		h.y =  cos(t/25)*7+h.edit
-		h.box ={x1=h.x,y1=h.y,x2=8+h.x,y2=8+h.y}
+		h.box ={x1=h.x,y1=h.y,x2=7+h.x,y2=8+h.y}
 		if col(head.box,h.box) then
 		 sfx(2)
 			del(health,h)
@@ -630,30 +637,37 @@ function update_game()
 	
 	for bee in all(bees) do
 		bee.x = bee.x-3
-		bee.y = cos(t/25)*7+bee.edit
+		if bee.hornet == true then
+			bee.y = cos(t/25)*7+cos(t/125)*4.6+cos(t/8)*7+bee.edit
+			print("hornet",bee.x,bee.y-10,8)
+		else
+			bee.y = cos(t/rnd(100))*rnd(8)+bee.edit
+		end	
 		bee.box ={x1=0+bee.x,y1=0+bee.y,x2=8+bee.x,y2=8+bee.y}
 		if col(head.box,bee.box) then
 			sfx(1)
 			make_explosion_ps(bee.x,bee.y)
 			bee.x = flr(rnd(50))+150
-			bee.y = cos(t/25)*7+bee.edit
+			bee.y = cos(t/rnd(100))*rnd(8)+bee.edit
+			bee.hornet = rnd(1)<=0.3
 			if life>0 then
 				life -=1
 			else
 				game_over()
 			end
 		elseif bee.x<0 then
+			bee.hornet = rnd(1)<=0.3
 			bee.x = flr(rnd(50))+150
-			bee.y = cos(t/25)*7+bee.edit
+			bee.y = cos(t/rnd(100))*rnd(8)+bee.edit
 		end
 		
 	end
 	
 	
 	for heart in all(hearts) do
-		heart.x = heart.x-1
-		heart.y = cos(t/25)*7+heart.edit
-		heart.box ={x1=0+heart.x,y1=0+heart.y,x2=8+heart.x,y2=8+heart.y}
+		heart.x = heart.x-2
+		heart.y = cos(t/15)*3+heart.edit
+		heart.box ={x1=heart.x,y1=heart.y,x2=7+heart.x,y2=6+heart.y}
 		if col(head.box,heart.box) then
 			sfx(0)
 			point = point+10
@@ -662,11 +676,11 @@ function update_game()
 			end
 			make_magicsparks_ps(heart.x,heart.y)
 			heart.x =flr(rnd(150))+ 150
-			heart.y =cos(t/25)*7+heart.edit
+			heart.y =cos(t/25)*8+heart.edit
 			
 		elseif heart.x<0 then
 			heart.x =flr(rnd(150))+ 150
-			heart.y =cos(t/25)*7+heart.edit
+			heart.y =cos(t/25)*8+heart.edit
 		end
 	end
 	
@@ -743,7 +757,6 @@ function draw_game()
 	
 	map(0,6,0,110,530,40)
 	
-
 	
 end
 __gfx__
