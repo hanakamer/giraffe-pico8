@@ -1,8 +1,8 @@
 pico-8 cartridge // http://www.pico-8.com
 version 8
 __lua__
-
-
+-- giraffe
+-- hana kamer, @terskaplumbaa
 function make_magicsparks_ps(ex,ey)
 	local ps = make_psystem(0.3,1.7, 1,5,1,5)
 
