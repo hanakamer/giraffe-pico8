@@ -483,10 +483,14 @@ function draw_life(count)
 	end
 	
 end
-
+function randomize_y(a)
+	local y =cos(t/5)*8+cos(t/125)*8+a+40
+	return y
+end
 
 function _init()
 	t=0
+	rndom_y = 0
 	cam_x = 0
 	cam_y = 0
 	bg_color = 12
@@ -526,8 +530,7 @@ function _init()
 			sp = 22,
 			x = flr(rnd(150))+ 150,
 			y =1,
-			edit = flr(rnd(20))+40,
-			hornet = rnd(1)<=0.3 
+			edit = 70
 		})
 		
 		add(health,{
@@ -544,7 +547,8 @@ function _init()
 			sp = 6,
 			x = flr(rnd(150))+ 150,
 			y =1,
-			edit = flr(rnd(20))+40 
+			edit = flr(rnd(20))+40, 
+			edited =10
 		})
 	end
 	
@@ -554,7 +558,6 @@ function _init()
 end
 
 function start()
-	
 	_update = update_game
 	_draw = draw_game
 end
@@ -638,28 +641,26 @@ function update_game()
 	
 	for bee in all(bees) do
 		bee.x = bee.x-3
-		if bee.hornet == true then
-			bee.y = cos(t/25)*7+cos(t/125)*4.6+cos(t/8)*7+bee.edit
-			print("hornet",bee.x,bee.y-10,8)
-		else
-			bee.y = cos(t/rnd(100))*rnd(8)+bee.edit
-		end	
+		bee.y = randomize_y(rndom_y)
 		bee.box ={x1=0+bee.x,y1=0+bee.y,x2=8+bee.x,y2=8+bee.y}
 		if col(head.box,bee.box) then
 			sfx(1)
+			rndom_y = rnd(40)
 			make_explosion_ps(bee.x,bee.y)
 			bee.x = flr(rnd(50))+150
-			bee.y = cos(t/rnd(100))*rnd(8)+bee.edit
-			bee.hornet = rnd(1)<=0.3
+			bee.edited = rnd(bee.edit)
+			bee.y = randomize_y(rndom_y)
+		
 			if life>0 then
 				life -=1
 			else
 				game_over()
 			end
 		elseif bee.x<0 then
-			bee.hornet = rnd(1)<=0.3
+			rndom_y = rnd(40)
 			bee.x = flr(rnd(50))+150
-			bee.y = cos(t/rnd(100))*rnd(8)+bee.edit
+			bee.edited = rnd(bee.edit)
+			bee.y = randomize_y(rndom_y)
 		end
 		
 	end
